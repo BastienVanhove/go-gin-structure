@@ -1,12 +1,12 @@
 package blog
 
 import (
-	contextManager "testObjectRoot/Core/ContextManager"
+	contextManager "root/Core/ContextManager"
 
 	"github.com/gin-gonic/gin"
 )
 
-func New(context *contextManager.Context) {
+func AddTo(context *contextManager.Context) {
 	Route(context)
 }
 

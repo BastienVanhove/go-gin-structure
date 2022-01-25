@@ -1,12 +1,11 @@
 package home
 
 import (
-	contextManager "testObjectRoot/Core/ContextManager"
-
-	"github.com/gin-gonic/gin"
+	contextManager "root/Core/ContextManager"
+    "github.com/gin-gonic/gin"
 )
 
-func New(context *contextManager.Context) {
+func AddTo(context *contextManager.Context) {
 	Route(context)
 }
 

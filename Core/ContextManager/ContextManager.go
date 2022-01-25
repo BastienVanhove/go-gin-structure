@@ -1,8 +1,8 @@
 package contextManager
 
 import (
-	controler "testObjectRoot/Core/Controler"
-	model "testObjectRoot/Core/Model"
+	controler "root/Core/Controler"
+	model "root/Core/Model"
 
 	"github.com/gin-gonic/gin"
 )
