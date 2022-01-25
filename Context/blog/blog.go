@@ -1,7 +1,7 @@
 package blog
 
 import (
-	"testObjectRoot/Manager/ContextManager"
+	"testObjectRoot/Core/ContextManager"
 
 	"github.com/gin-gonic/gin"
 )
