@@ -38,19 +38,17 @@ func Start() {
     allContext["home"] = home.AddTo
     allContext["blog"] = blog.AddTo
 
-
     //la logique d'env
     engine := gin.Default()
 
-	contextM := &contextManagerStruct.Context{Name: "ContextM", Engine: engine}
-
+	Context := &contextManagerStruct.Context{Name: "Context", Engine: engine}
 
     for keyC, valueC := range allContext { 
         for keyEnv, valueEnv := range mapEnv{
             if(keyC == keyEnv && valueEnv == "false"){
                 fmt.Println(keyEnv)
             }else{
-                valueC(contextM) 
+                valueC(Context) 
             }
         }
     }
