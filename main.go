@@ -1,5 +1,5 @@
 package main
 
-import contextManager "root/Context/contextManage"
+import context "root/Context"
 
-func main() { contextManager.Start() }
+func main() { context.Start() }

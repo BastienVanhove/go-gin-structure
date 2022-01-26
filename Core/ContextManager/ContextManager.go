@@ -24,15 +24,15 @@ func (c *Context) StartAllController() {
 }
 
 //peut etre qu'il faudrait mettre l'engine dans context manager
-type ContextManager struct {
+type Global struct {
 	Name string
 	Contexts []Context
 }
 
-func (c *ContextManager) AddContext(context *Context){
+func (c *Global) AddContext(context *Context){
 	c.Contexts = append(c.Contexts, *context)
 }
-func (c *ContextManager) StartAllContext(context *Context){
+func (c *Global) StartAllContext(context *Context){
 	fmt.Println("start all context...")
 }
 
