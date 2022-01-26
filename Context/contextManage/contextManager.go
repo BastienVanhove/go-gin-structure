@@ -21,7 +21,10 @@ func Start() {
     //read .env
     env := ".env"
     envVariable := envRead.Read(env)
-    fmt.Println(envVariable)
+    
+    //ici faut faire un syst de 8080 de base que le port n'est pas def
+    PORT := envVariable["PORT"]
+    fmt.Println(PORT)
     
     //pour interagir avec les variables d'environnement
     allContext := make(map[string]func(context *contextManagerStruct.Context))
@@ -43,5 +46,5 @@ func Start() {
         }
     }
 
-	engine.Run()
+	engine.Run(":"+PORT)
 }
