@@ -2,8 +2,8 @@ package context
 
 import (
 	"fmt"
-	blog "root/Context/blog/controllers"
-	contextManagerStruct "root/Core/ContextManager"
+	blogContext "root/Context/Blog"
+	contextManager "root/Core/ContextManager"
 
 	"github.com/gin-gonic/gin"
 	//"root/Core/envRead"
@@ -26,18 +26,26 @@ func Start() {
 
 	engine := gin.Default()
 
-	allContextObj := &contextManagerStruct.Global{
-		Name: "AllContext",
-	}
-
-	Context := &contextManagerStruct.Context{
-		Name:   "Blog",
+	allContextObj := &contextManager.Global{
+		Name:   "AllContext",
 		Engine: engine,
 	}
-	allContextObj.AddContext(blog.AddTo(Context))
+
+	allContextObj.AddContext(blogContext.Init())
+
+	Route(allContextObj)
 
 	fmt.Println(allContextObj)
 
-	//engine.Run(":"+PORT)
+	engine.Run()
 
+}
+
+func Route(global *contextManager.Global) {
+	for _, context := range global.Contexts {
+		//Verification ENV ici => if
+		fmt.Println("ROUTE")
+		context.Start(global)
+		//endif
+	}
 }

@@ -1,6 +1,8 @@
 package controler
 
+import "github.com/gin-gonic/gin"
+
 type Controler struct {
 	Route string
-	Start func(route string)
+	Start func(string)
 }
