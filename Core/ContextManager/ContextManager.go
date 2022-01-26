@@ -26,9 +26,14 @@ func (c *Context) StartAllController() {
 //peut etre qu'il faudrait mettre l'engine dans context manager
 type ContextManager struct {
 	Name string
-	Contexts map[string]Context
+	Contexts []Context
 }
 
-func (c ContextManager) AddContext(context *Context){
-	fmt.Println("new Context is : ", context)
+func (c *ContextManager) AddContext(context *Context){
+	c.Contexts = append(c.Contexts, *context)
 }
+func (c *ContextManager) StartAllContext(context *Context){
+	fmt.Println("start all context...")
+}
+
+

@@ -25,13 +25,13 @@ func Start() {
 
     engine := gin.Default()
 
-	Context := &contextManagerStruct.Context{
-        Name: "Context", 
-        Engine: engine,
-    }
     allContextObj := &contextManagerStruct.ContextManager{
         Name: "AllContext",
-        Contexts: make(map[string]contextManagerStruct.Context),
+    }
+
+    Context := &contextManagerStruct.Context{
+        Name: "Blog", 
+        Engine: engine,
     }
     allContextObj.AddContext(blog.AddTo(Context))
 
