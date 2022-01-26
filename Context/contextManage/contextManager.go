@@ -8,11 +8,20 @@ import (
 	contextManagerStruct "root/Core/ContextManager"
 
 	"github.com/gin-gonic/gin"
+
+    "root/Core/envRead"
 )
 
-func Start(mapEnv map[string]string) {
+func Start() {
 
-    fmt.Println(mapEnv)
+    //unactive section
+    fileEnvToRead := "context.env"
+    mapEnv := envRead.Read(fileEnvToRead)
+
+    //read .env
+    env := ".env"
+    envVariable := envRead.Read(env)
+    fmt.Println(envVariable)
     
     //pour interagir avec les variables d'environnement
     allContext := make(map[string]func(context *contextManagerStruct.Context))
