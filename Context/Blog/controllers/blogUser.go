@@ -1,7 +1,6 @@
 package blogController
 
 import (
-	"fmt"
 	contextManager "root/Core/ContextManager"
 
 	"github.com/gin-gonic/gin"
@@ -13,5 +12,4 @@ func BlogUser(global *contextManager.Global) {
 			"route": "/blog/user",
 		})
 	})
-	fmt.Println("Route load")
 }

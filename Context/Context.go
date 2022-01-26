@@ -4,6 +4,7 @@ import (
 	"fmt"
 	blogContext "root/Context/Blog"
 	contextManager "root/Core/ContextManager"
+	model "root/Core/Model"
 
 	"github.com/gin-gonic/gin"
 	//"root/Core/envRead"
@@ -26,9 +27,18 @@ func Start() {
 
 	engine := gin.Default()
 
+	mongodb := &model.DataBaseSession{
+		Host:     "localhost",
+		Password: "***",
+	}
+
+	//entityManager := &model.EntityManager{}
+
 	allContextObj := &contextManager.Global{
 		Name:   "AllContext",
 		Engine: engine,
+		//EntityManager: entityManager,
+		DataBase: mongodb,
 	}
 
 	allContextObj.AddContext(blogContext.Init())
@@ -37,7 +47,7 @@ func Start() {
 
 	fmt.Println(allContextObj)
 
-	engine.Run()
+	//engine.Run()
 
 }
 

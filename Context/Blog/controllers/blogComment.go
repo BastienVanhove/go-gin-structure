@@ -2,6 +2,7 @@ package blogController
 
 import (
 	"fmt"
+	blogModel "root/Context/Blog/Models"
 	contextManager "root/Core/ContextManager"
 
 	"github.com/gin-gonic/gin"
@@ -13,5 +14,11 @@ func BlogComment(global *contextManager.Global) {
 			"route": "/blog/comment",
 		})
 	})
-	fmt.Println("Route load")
+
+	commentEntity := blogModel.BlogCommentEntity{
+		DataBase: global.DataBase,
+	}
+
+	commentEntity.GetComment(1)
+	fmt.Println(commentEntity.Message)
 }

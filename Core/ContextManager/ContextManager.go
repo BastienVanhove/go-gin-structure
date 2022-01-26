@@ -2,6 +2,7 @@ package contextManager
 
 import (
 	"fmt"
+	model "root/Core/Model"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,6 +16,8 @@ type Context struct {
 type Global struct {
 	Name     string
 	Engine   *gin.Engine
+	DataBase *model.DataBaseSession
+	//EntityManager *model.EntityManager
 	Contexts []Context
 }
 
