@@ -4,14 +4,17 @@ import (
 	"fmt"
 	contextManager "root/Core/ContextManager"
 	"github.com/gin-gonic/gin"
+
 )
 
 func AddTo(context *contextManager.Context) {
 	Route(context)
-	//rename cette function New
-	//renvoyer un objet de type Context qui contient tous les objet de 
-	//type controllers dans un arr 
-	//l'objet context a aussi une methods pour loop start tous les controllers
+
+	cont := monControllerCommentaire(context)
+	fmt.Println(cont)
+
+	context.AddController(cont)
+
 }
 
 func Route(context *contextManager.Context) {

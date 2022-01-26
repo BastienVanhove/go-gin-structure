@@ -2,6 +2,7 @@ package contextManager
 
 import (
 	"fmt"
+
 	controler "root/Core/Controler"
 	model "root/Core/Model"
 
@@ -14,6 +15,11 @@ type Context struct {
 	Controler *controler.Controler
 	Model     *model.Model
 }
+
+func (c *Context) AddController(controller controler.Controler){
+	fmt.Println("you add a controller", controller)
+}
+
 //peut etre qu'il faudrait mettre l'engine dans context manager
 type ContextManager struct {
 	Name string
