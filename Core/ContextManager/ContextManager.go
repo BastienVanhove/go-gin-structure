@@ -12,12 +12,13 @@ import (
 type Context struct {
 	Name      string
 	Engine    *gin.Engine
-	Controler *controler.Controler
+	Controlers []controler.Controler
 	Model     *model.Model
 }
 
 func (c *Context) AddController(controller controler.Controler){
-	fmt.Println("you add a controller", controller)
+	//il faut verifier si il n'existe pas deja
+	c.Controlers = append(c.Controlers, controller)
 }
 
 //peut etre qu'il faudrait mettre l'engine dans context manager

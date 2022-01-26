@@ -11,9 +11,13 @@ func AddTo(context *contextManager.Context) {
 	Route(context)
 
 	cont := monControllerCommentaire(context)
-	fmt.Println(cont)
 
 	context.AddController(cont)
+	context.AddController(cont)
+	context.AddController(cont)
+
+	fmt.Println(context)
+
 
 }
 
