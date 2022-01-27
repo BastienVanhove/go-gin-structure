@@ -1,15 +1,13 @@
 package blogModel
 
 import (
-	"context"
+	model "root/Core/Model"
 
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type BlogCommentEntity struct {
-	DataBase   *mongo.Database
-	AppContext context.Context
-}
+//IMPORTANT to create a struct on Entity => to add custom method for this model
+type BlogCommentEntity model.Entity
 
 type Comment struct {
 	User    string
@@ -26,7 +24,4 @@ func (e *BlogCommentEntity) CreateComment(comment Comment) *mongo.InsertOneResul
 		panic(err)
 	}
 	return result
-}
-
-func (e *BlogCommentEntity) GetComment(user string) {
 }

@@ -38,6 +38,6 @@ func Connexion(ctx context.Context, DB_NAME string, DB_URI string) *mongo.Databa
 }
 
 type Entity struct {
-	DB        string
-	UseEntity interface{}
+	DataBase   *mongo.Database
+	AppContext context.Context
 }
