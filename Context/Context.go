@@ -6,6 +6,7 @@ import (
 	contextManager "root/Core/ContextManager"
 	model "root/Core/Model"
 	"root/Core/envRead"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,8 +23,12 @@ func Start() {
 	env := ".env"
 	envVariable := envRead.Read(env)
 
-	//Context connexion: for timeout reponse
+	//Context Initialisation
 	ctx := context.TODO()
+
+	//Context connexion: for timeout reponse
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
 
 	//GET connected to DB client
 	DataBase := model.Connexion(ctx, envVariable["DB_NAME"], envVariable["DB_URI"])
