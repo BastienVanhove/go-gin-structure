@@ -16,7 +16,8 @@ func (e *BlogCommentEntity) CreateComment(comment string) {
 	fmt.Println("[Model blogComment] Success created comment => ", comment)
 }
 
-func (e *BlogCommentEntity) GetComment(id int) {
+func (e *BlogCommentEntity) GetComment(id int) string {
 	message := "Un message recuperé dans la DB"
 	e.Message = message
+	return message
 }

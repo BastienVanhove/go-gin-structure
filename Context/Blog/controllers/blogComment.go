@@ -19,6 +19,6 @@ func BlogComment(global *contextManager.Global) {
 		DataBase: global.DataBase,
 	}
 
-	commentEntity.GetComment(1)
-	fmt.Println(commentEntity.Message)
+	message := commentEntity.GetComment(1)
+	fmt.Println(message)
 }
