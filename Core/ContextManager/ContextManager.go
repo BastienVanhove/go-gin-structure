@@ -1,10 +1,10 @@
 package contextManager
 
 import (
-	"fmt"
-	model "root/Core/Model"
+	"context"
 
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type Context struct {
@@ -12,18 +12,14 @@ type Context struct {
 	Start func(global *Global)
 }
 
-//peut etre qu'il faudrait mettre l'engine dans context manager
 type Global struct {
-	Name     string
-	Engine   *gin.Engine
-	DataBase *model.DataBaseSession
-	//EntityManager *model.EntityManager
-	Contexts []Context
+	Name       string
+	Engine     *gin.Engine
+	DataBase   *mongo.Database
+	AppContext context.Context
+	Contexts   []Context
 }
 
 func (c *Global) AddContext(context *Context) {
 	c.Contexts = append(c.Contexts, *context)
-}
-func (c *Global) StartAllContext(context *Context) {
-	fmt.Println("start all context...")
 }

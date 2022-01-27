@@ -1,7 +1,6 @@
 package blogController
 
 import (
-	"fmt"
 	blogModel "root/Context/Blog/Models"
 	contextManager "root/Core/ContextManager"
 
@@ -16,9 +15,20 @@ func BlogComment(global *contextManager.Global) {
 	})
 
 	commentEntity := blogModel.BlogCommentEntity{
-		DataBase: global.DataBase,
+		DataBase:   global.DataBase,
+		AppContext: global.AppContext,
 	}
 
-	message := commentEntity.GetComment(1)
-	fmt.Println(message)
+	myComment := blogModel.Comment{
+		User:    "T",
+		Message: "Heyy",
+	}
+
+	yourComment := blogModel.Comment{
+		User:    "B",
+		Message: "Awesome !!",
+	}
+
+	commentEntity.CreateComment(myComment)
+	commentEntity.CreateComment(yourComment)
 }

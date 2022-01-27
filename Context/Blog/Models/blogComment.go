@@ -1,23 +1,32 @@
 package blogModel
 
 import (
-	"fmt"
-	model "root/Core/Model"
+	"context"
+
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type BlogCommentEntity struct {
-	DataBase *model.DataBaseSession
-	User     string
-	Message  string
+	DataBase   *mongo.Database
+	AppContext context.Context
 }
 
-func (e *BlogCommentEntity) CreateComment(comment string) {
-	fmt.Println("Connexion : ", e.DataBase.Host, e.DataBase.Password)
-	fmt.Println("[Model blogComment] Success created comment => ", comment)
+type Comment struct {
+	User    string
+	Message string
 }
 
-func (e *BlogCommentEntity) GetComment(id int) string {
-	message := "Un message recuperé dans la DB"
-	e.Message = message
-	return message
+var collectionName string = "blogComment"
+var collectionComment *mongo.Collection
+
+func (e *BlogCommentEntity) CreateComment(comment Comment) *mongo.InsertOneResult {
+	collectionComment := e.DataBase.Collection(collectionName)
+	result, err := collectionComment.InsertOne(e.AppContext, comment)
+	if err != nil {
+		panic(err)
+	}
+	return result
+}
+
+func (e *BlogCommentEntity) GetComment(user string) {
 }

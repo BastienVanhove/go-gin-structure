@@ -1,13 +1,13 @@
 package context
 
 import (
-	"fmt"
+	"context"
 	blogContext "root/Context/Blog"
 	contextManager "root/Core/ContextManager"
 	model "root/Core/Model"
+	"root/Core/envRead"
 
 	"github.com/gin-gonic/gin"
-	//"root/Core/envRead"
 )
 
 func Start() {
@@ -16,45 +16,38 @@ func Start() {
 	   //unactive section
 	   fileEnvToRead := "context.env"
 	   mapEnv := envRead.Read(fileEnvToRead)
-
-	   //read .env
-	   env := ".env"
-	   envVariable := envRead.Read(env)
-
-	   //ici faut faire un syst de 8080 de base que le port n'est pas def
-	   PORT := envVariable["PORT"]
 	*/
+
+	//READ .env file
+	env := ".env"
+	envVariable := envRead.Read(env)
+
+	//Context connexion: for timeout reponse
+	ctx := context.TODO()
+
+	//GET connected to DB client
+	DataBase := model.Connexion(envVariable["DB_NAME"], envVariable["DB_URI"], ctx)
 
 	engine := gin.Default()
 
-	mongodb := &model.DataBaseSession{
-		Host:     "localhost",
-		Password: "***",
-	}
-
-	//entityManager := &model.EntityManager{}
-
+	//DEFINE Global struct
 	allContextObj := &contextManager.Global{
-		Name:   "AllContext",
-		Engine: engine,
-		//EntityManager: entityManager,
-		DataBase: mongodb,
+		Name:       "AllContext",
+		Engine:     engine,
+		DataBase:   DataBase,
+		AppContext: ctx,
 	}
 
 	allContextObj.AddContext(blogContext.Init())
 
-	Route(allContextObj)
-
-	fmt.Println(allContextObj)
+	InitContexts(allContextObj)
 
 	//engine.Run()
-
 }
 
-func Route(global *contextManager.Global) {
+func InitContexts(global *contextManager.Global) {
 	for _, context := range global.Contexts {
 		//Verification ENV ici => if
-		fmt.Println("ROUTE")
 		context.Start(global)
 		//endif
 	}

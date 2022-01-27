@@ -1,22 +1,41 @@
 package model
 
+import (
+	"context"
+	"log"
+
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+)
+
 //type DataBaseSessionManager struct{
 //	DataBaseSession []*DataBaseSession
 //}
 
 //Il pourrait y avoir plusieurs sessions avec un session manager qui serait dans le Global
-type DataBaseSession struct {
-	Host     string
-	Password string
+type DataBase struct {
+	DB_URI  string
+	DB_NAME string
 }
 
 //Faire une fonction de connexion qui retoure l'accès au methode de la DB ( mongo / sql / ... )
 
-//func (db *DataBaseSession) Connexion() /* ici retour la struct de la DB */ {
-//	fmt.Println(db.Host, db.Password)
-//}
+func Connexion(DB_NAME string, DB_URI string, ctx context.Context) *mongo.Database {
 
-//type EntityManager struct {
-//	Push func() bool
-//	Pull func() bool
-//}
+	clientOptions := options.Client().ApplyURI(DB_URI)
+	client, err := mongo.Connect(ctx, clientOptions)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = client.Ping(ctx, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return client.Database(DB_NAME)
+}
+
+type Entity struct {
+	DB        string
+	UseEntity interface{}
+}
