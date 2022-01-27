@@ -20,6 +20,14 @@ type Global struct {
 	Contexts   []Context
 }
 
-func (c *Global) AddContext(context *Context) {
-	c.Contexts = append(c.Contexts, *context)
+func (global *Global) AddContext(context *Context) {
+	global.Contexts = append(global.Contexts, *context)
+}
+
+func (global *Global) InitContexts() {
+	for _, context := range global.Contexts {
+		//Verification ENV ici => if
+		context.Start(global)
+		//endif
+	}
 }

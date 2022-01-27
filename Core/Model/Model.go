@@ -20,7 +20,7 @@ type DataBase struct {
 
 //Faire une fonction de connexion qui retoure l'accès au methode de la DB ( mongo / sql / ... )
 
-func Connexion(DB_NAME string, DB_URI string, ctx context.Context) *mongo.Database {
+func Connexion(ctx context.Context, DB_NAME string, DB_URI string) *mongo.Database {
 
 	clientOptions := options.Client().ApplyURI(DB_URI)
 	client, err := mongo.Connect(ctx, clientOptions)
@@ -31,7 +31,6 @@ func Connexion(DB_NAME string, DB_URI string, ctx context.Context) *mongo.Databa
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	return client.Database(DB_NAME)
 }
 

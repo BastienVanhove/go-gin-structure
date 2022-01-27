@@ -26,29 +26,20 @@ func Start() {
 	ctx := context.TODO()
 
 	//GET connected to DB client
-	DataBase := model.Connexion(envVariable["DB_NAME"], envVariable["DB_URI"], ctx)
+	DataBase := model.Connexion(ctx, envVariable["DB_NAME"], envVariable["DB_URI"])
 
 	engine := gin.Default()
 
 	//DEFINE Global struct
-	allContextObj := &contextManager.Global{
+	Global := &contextManager.Global{
 		Name:       "AllContext",
 		Engine:     engine,
 		DataBase:   DataBase,
 		AppContext: ctx,
 	}
 
-	allContextObj.AddContext(blogContext.Init())
-
-	InitContexts(allContextObj)
+	Global.AddContext(blogContext.Init())
+	Global.InitContexts()
 
 	//engine.Run()
-}
-
-func InitContexts(global *contextManager.Global) {
-	for _, context := range global.Contexts {
-		//Verification ENV ici => if
-		context.Start(global)
-		//endif
-	}
 }
