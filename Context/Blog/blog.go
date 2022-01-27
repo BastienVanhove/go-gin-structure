@@ -15,8 +15,5 @@ func Init() *contextManager.Context {
 		},
 	}
 
-	//context.AddController( blog1(context) )
-	//context.AddController( blog2(context) )
-
 	return context
 }

@@ -24,10 +24,10 @@ func (global *Global) AddContext(context *Context) {
 	global.Contexts = append(global.Contexts, *context)
 }
 
-func (global *Global) InitContexts() {
+func (global *Global) InitContexts(envContext map[string]string) {
 	for _, context := range global.Contexts {
-		//Verification ENV ici => if
-		context.Start(global)
-		//endif
+		if envContext[context.Name] != "false" {
+			context.Start(global)
+		}
 	}
 }

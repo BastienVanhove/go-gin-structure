@@ -13,15 +13,12 @@ import (
 
 func Start() {
 
-	/*
-	   //unactive section
-	   fileEnvToRead := "context.env"
-	   mapEnv := envRead.Read(fileEnvToRead)
-	*/
-
 	//READ .env file
+	fileEnvToRead := "context.env"
+	envContext := envRead.Read(fileEnvToRead)
+
 	env := ".env"
-	envVariable := envRead.Read(env)
+	envVariables := envRead.Read(env)
 
 	//Context Initialisation
 	ctx := context.TODO()
@@ -31,7 +28,7 @@ func Start() {
 	defer cancel()
 
 	//GET connected to DB client
-	DataBase := model.Connexion(ctx, envVariable["DB_NAME"], envVariable["DB_URI"])
+	DataBase := model.Connexion(ctx, envVariables["DB_NAME"], envVariables["DB_URI"])
 
 	engine := gin.Default()
 
@@ -44,7 +41,7 @@ func Start() {
 	}
 
 	Global.AddContext(blogContext.Init())
-	Global.InitContexts()
+	Global.InitContexts(envContext)
 
 	//engine.Run()
 }
