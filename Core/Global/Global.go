@@ -1,4 +1,4 @@
-package contextManager
+package global
 
 import (
 	"context"
@@ -7,20 +7,15 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type Context struct {
-	Name  string
-	Start func(global *Global)
-}
-
 type Global struct {
 	Name       string
 	Engine     *gin.Engine
 	DataBase   *mongo.Database
 	AppContext context.Context
-	Contexts   []Context
+	Contexts   []ContextController
 }
 
-func (global *Global) AddContext(context *Context) {
+func (global *Global) AddContext(context *ContextController) {
 	global.Contexts = append(global.Contexts, *context)
 }
 
@@ -30,4 +25,13 @@ func (global *Global) InitContexts(envContext map[string]string) {
 			context.Start(global)
 		}
 	}
+}
+
+/*
+	Problem of "cycle import"
+	=> Move into Core/ContextController needs some structure edits
+*/
+type ContextController struct {
+	Name  string
+	Start func(global *Global)
 }

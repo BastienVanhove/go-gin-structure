@@ -1,9 +1,9 @@
-package context
+package contextStart
 
 import (
 	"context"
 	blogContext "root/Context/Blog"
-	contextManager "root/Core/ContextManager"
+	global "root/Core/Global"
 	model "root/Core/Model"
 	"root/Core/envRead"
 	"time"
@@ -33,7 +33,7 @@ func Start() {
 	engine := gin.Default()
 
 	//DEFINE Global struct
-	Global := &contextManager.Global{
+	Global := &global.Global{
 		Name:       "AllContext",
 		Engine:     engine,
 		DataBase:   DataBase,

@@ -1,12 +1,12 @@
 package blogController
 
 import (
-	contextManager "root/Core/ContextManager"
+	global "root/Core/Global"
 
 	"github.com/gin-gonic/gin"
 )
 
-func BlogUser(global *contextManager.Global) {
+func BlogUser(global *global.Global) {
 	global.Engine.GET("/blog/user", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"route": "/blog/user",

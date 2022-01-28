@@ -2,14 +2,14 @@ package blogContext
 
 import (
 	blogController "root/Context/blog/controllers"
-	contextManager "root/Core/ContextManager"
+	global "root/Core/Global"
 )
 
-func Init() *contextManager.Context {
+func Init() *global.ContextController {
 
-	context := &contextManager.Context{
+	context := &global.ContextController{
 		Name: "blog",
-		Start: func(global *contextManager.Global) {
+		Start: func(global *global.Global) {
 			blogController.BlogComment(global)
 			blogController.BlogUser(global)
 		},
