@@ -2,34 +2,40 @@ package authController
 
 import (
 	authModel "root/Context/Auth/Models"
+	auth "root/Core/Auth"
 	global "root/Core/Global"
-	user "root/Core/User"
 	utility "root/Core/Utility"
 
 	"github.com/gin-gonic/gin"
 )
 
-func AuthRegister(global *global.Global, auth *gin.RouterGroup) {
-	auth.GET("/register", func(c *gin.Context) {
+func AuthRegister(global *global.Global, authGroup *gin.RouterGroup) {
+	authGroup.GET("/register", func(c *gin.Context) {
+
+		var login auth.Login
+		if err := c.ShouldBind(&login); err != nil {
+			panic(err)
+		}
+		if (login == auth.Login{}) {
+			panic("Information manquant")
+		}
+
+		registerEntity := authModel.AuthRegisterEntity{
+			DataBase:   global.DataBase,
+			AppContext: global.AppContext,
+		}
+
+		password, _ := utility.HashPassword(login.Password)
+
+		user := auth.User{
+			Name:     login.UserName,
+			Password: password,
+		}
+
+		registerEntity.Register(user)
+
 		c.JSON(200, gin.H{
-			"route": "/blog/comment",
+			"route": "/register",
 		})
 	})
-
-	name := "Bastien"
-	pswd := "bb"
-
-	password, _ := utility.HashPassword(pswd)
-
-	user := user.User{
-		Name:     name,
-		Password: password,
-	}
-
-	registerEntity := authModel.AuthRegisterEntity{
-		DataBase:   global.DataBase,
-		AppContext: global.AppContext,
-	}
-
-	registerEntity.Register(user)
 }

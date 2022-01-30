@@ -18,24 +18,12 @@ func BlogComment(global *global.Global) {
 	r.GET("/", func(c *gin.Context) {
 		claims := jwt.ExtractClaims(c)
 
-		user, _ := c.Get("id")
+		user, _ := c.Get(auth.IdentityKey)
 
 		fmt.Println(claims)
 
 		c.JSON(200, gin.H{
-			"user": user.(*auth.User),
+			"userID": user.(*auth.User).ID,
 		})
 	})
-
-	//commentEntity := blogModel.BlogCommentEntity{
-	//	DataBase:   global.DataBase,
-	//	AppContext: global.AppContext,
-	//}
-
-	//myComment := blogModel.Comment{
-	//	User:    "T",
-	//	Message: "Heyy",
-	//}
-
-	//commentEntity.CreateComment(myComment)
 }

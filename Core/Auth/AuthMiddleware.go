@@ -5,12 +5,13 @@ import (
 	"time"
 
 	jwt "github.com/appleboy/gin-jwt/v2"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 
 	"github.com/gin-gonic/gin"
 )
 
-var identityKey = "id"
+var IdentityKey = "id"
 
 func Middleware(dataBase *mongo.Database) *jwt.GinJWTMiddleware {
 
@@ -23,19 +24,20 @@ func Middleware(dataBase *mongo.Database) *jwt.GinJWTMiddleware {
 		Key:         []byte("secret key"),
 		Timeout:     time.Hour,
 		MaxRefresh:  time.Hour,
-		IdentityKey: identityKey,
+		IdentityKey: IdentityKey,
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
 			if user, ok := data.(*User); ok {
 				return jwt.MapClaims{
-					identityKey: user.Name,
+					IdentityKey: user.ID,
 				}
 			}
 			return jwt.MapClaims{}
 		},
 		IdentityHandler: func(c *gin.Context) interface{} {
 			claims := jwt.ExtractClaims(c)
+			objectID, _ := primitive.ObjectIDFromHex(claims[IdentityKey].(string))
 			return &User{
-				Name: claims[identityKey].(string),
+				ID: objectID,
 			}
 		},
 		Authenticator: func(c *gin.Context) (interface{}, error) {
@@ -43,11 +45,9 @@ func Middleware(dataBase *mongo.Database) *jwt.GinJWTMiddleware {
 			if err := c.ShouldBind(&loginVals); err != nil {
 				return "", jwt.ErrMissingLoginValues
 			}
-			username := loginVals.UserName
-			password := loginVals.Password
 
-			user := AuthEntity.AuthLogin(username)
-			if (User{} != user && utility.CheckPasswordHash(password, user.Password)) {
+			user := AuthEntity.AuthLogin(loginVals.UserName)
+			if (User{} != user && utility.CheckPasswordHash(loginVals.Password, user.Password)) {
 				return &user, nil
 			}
 

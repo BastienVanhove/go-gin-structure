@@ -1,20 +1,33 @@
 package authModel
 
 import (
+	"fmt"
+	auth "root/Core/Auth"
 	model "root/Core/Model"
-	user "root/Core/User"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 //IMPORTANT to create a struct on Entity => to add custom method for this model
 type AuthRegisterEntity model.Entity
 
-func (e *AuthRegisterEntity) Register(user user.User) *mongo.InsertOneResult {
+func (e *AuthRegisterEntity) Register(user auth.User) *mongo.InsertOneResult {
 	collectionUser := e.DataBase.Collection("user")
+
+	var existingUser auth.User
+	collectionUser.FindOne(e.AppContext, bson.D{{"name", user.Name}}).Decode(&existingUser)
+
+	if (existingUser != auth.User{}) {
+		fmt.Println("[Auth Register] Utilisateur existant")
+		return &mongo.InsertOneResult{}
+	}
+
+	fmt.Println("[Auth Register] Création du nouvel utilisateur")
 	result, err := collectionUser.InsertOne(e.AppContext, user)
 	if err != nil {
 		panic(err)
 	}
 	return result
+
 }

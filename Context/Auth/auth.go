@@ -13,7 +13,7 @@ func Init() *global.ContextController {
 			auth := global.Engine.Group("/auth")
 			{
 				authController.AuthLogin(global, auth)
-				//authController.AuthRegister(global, auth)
+				authController.AuthRegister(global, auth)
 			}
 		},
 	}
