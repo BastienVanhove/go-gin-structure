@@ -3,6 +3,7 @@ package global
 import (
 	"context"
 
+	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -12,7 +13,7 @@ type Global struct {
 	DataBase   *mongo.Database
 	AppContext context.Context
 	Contexts   []ContextController
-	User       string
+	Auth       *jwt.GinJWTMiddleware
 }
 
 func (global *Global) AddContext(context *ContextController) {

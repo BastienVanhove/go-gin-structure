@@ -4,6 +4,7 @@ import (
 	"context"
 	authContext "root/Context/Auth"
 	blogContext "root/Context/Blog"
+	auth "root/Core/Auth"
 	global "root/Core/Global"
 	model "root/Core/Model"
 	"root/Core/envRead"
@@ -37,6 +38,7 @@ func Start() {
 	Global := &global.Global{
 		Engine:     engine,
 		DataBase:   DataBase,
+		Auth:       auth.Middleware(DataBase),
 		AppContext: ctx,
 	}
 
@@ -44,6 +46,6 @@ func Start() {
 	Global.AddContext(authContext.Init())
 	Global.InitContexts(envContext)
 
-	//engine.Run()
+	engine.Run()
 
 }

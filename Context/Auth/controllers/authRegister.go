@@ -16,10 +16,13 @@ func AuthRegister(global *global.Global, auth *gin.RouterGroup) {
 		})
 	})
 
-	password, _ := utility.HashPassword("password")
+	name := "Bastien"
+	pswd := "bb"
+
+	password, _ := utility.HashPassword(pswd)
 
 	user := user.User{
-		Name:     "Thomas",
+		Name:     name,
 		Password: password,
 	}
 
