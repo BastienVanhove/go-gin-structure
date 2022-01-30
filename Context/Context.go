@@ -2,6 +2,7 @@ package contextStart
 
 import (
 	"context"
+	authContext "root/Context/Auth"
 	blogContext "root/Context/Blog"
 	global "root/Core/Global"
 	model "root/Core/Model"
@@ -34,14 +35,15 @@ func Start() {
 
 	//DEFINE Global struct
 	Global := &global.Global{
-		Name:       "AllContext",
 		Engine:     engine,
 		DataBase:   DataBase,
 		AppContext: ctx,
 	}
 
 	Global.AddContext(blogContext.Init())
+	Global.AddContext(authContext.Init())
 	Global.InitContexts(envContext)
 
 	//engine.Run()
+
 }

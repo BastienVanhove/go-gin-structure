@@ -8,11 +8,11 @@ import (
 )
 
 type Global struct {
-	Name       string
 	Engine     *gin.Engine
 	DataBase   *mongo.Database
 	AppContext context.Context
 	Contexts   []ContextController
+	User       string
 }
 
 func (global *Global) AddContext(context *ContextController) {
