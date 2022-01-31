@@ -1,10 +1,12 @@
 package authController
 
 import (
+	"net/http"
 	authModel "root/Context/Auth/Models"
 	auth "root/Core/Auth"
 	global "root/Core/Global"
 	utility "root/Core/Utility"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,12 +14,10 @@ import (
 func AuthRegister(global *global.Global, authGroup *gin.RouterGroup) {
 	authGroup.GET("/register", func(c *gin.Context) {
 
-		var login auth.Login
-		if err := c.ShouldBind(&login); err != nil {
-			panic(err)
-		}
-		if (login == auth.Login{}) {
-			panic("Information manquant")
+		var register auth.Register
+		if err := c.ShouldBind(&register); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": strings.Split(err.Error(), "\n")})
+			return
 		}
 
 		registerEntity := authModel.AuthRegisterEntity{
@@ -25,17 +25,31 @@ func AuthRegister(global *global.Global, authGroup *gin.RouterGroup) {
 			AppContext: global.AppContext,
 		}
 
-		password, _ := utility.HashPassword(login.Password)
+		password, _ := utility.HashPassword(register.Password)
 
 		user := auth.User{
-			Name:     login.UserName,
+			Name:     register.UserName,
+			Email:    register.Email,
 			Password: password,
 		}
 
-		registerEntity.Register(user)
+		id, err := registerEntity.Register(user)
+
+		if err != nil {
+			c.JSON(200, gin.H{
+				"message": "Failed",
+				"error":   err.Error(),
+			})
+			return
+		}
 
 		c.JSON(200, gin.H{
-			"route": "/register",
+			"message":  "success",
+			"username": user.Name,
+			"email":    user.Email,
+			"password": user.Password,
+			"ID":       id,
 		})
+
 	})
 }
