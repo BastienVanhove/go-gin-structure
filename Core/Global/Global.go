@@ -5,6 +5,7 @@ import (
 
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -14,6 +15,7 @@ type Global struct {
 	AppContext context.Context
 	Contexts   []ContextController
 	Auth       *jwt.GinJWTMiddleware
+	Validator  *validator.Validate
 }
 
 func (global *Global) AddContext(context *ContextController) {

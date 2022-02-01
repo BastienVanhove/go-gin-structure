@@ -6,7 +6,6 @@ import (
 	auth "root/Core/Auth"
 	global "root/Core/Global"
 	utility "root/Core/Utility"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,7 +15,7 @@ func AuthRegister(global *global.Global, authGroup *gin.RouterGroup) {
 
 		var register auth.Register
 		if err := c.ShouldBind(&register); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": strings.Split(err.Error(), "\n")})
+			c.JSON(http.StatusBadRequest, gin.H{"errors": utility.BeautifulError(err)})
 			return
 		}
 
@@ -36,7 +35,7 @@ func AuthRegister(global *global.Global, authGroup *gin.RouterGroup) {
 		id, err := registerEntity.Register(user)
 
 		if err != nil {
-			c.JSON(200, gin.H{
+			c.JSON(http.StatusBadRequest, gin.H{
 				"message": "Failed",
 				"error":   err.Error(),
 			})
