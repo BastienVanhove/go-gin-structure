@@ -48,11 +48,34 @@ func Start() {
 		})
 	}
 
+	authMiddleware := auth.Middleware(DataBase)
+
+	/*TODO : User systeme
+
+	JWT:
+	- register => Create user
+	- Login => Return JWT and save in cookie
+	- Page needs login => (client) send jwt in athorization header
+	- Persist =>
+	 	- when enter check the cookie if valid
+
+	oAuth:
+	- register =>
+		- use Provider interface
+		- create user
+		- get access / refresh token and users datas
+		- create jwt of acces_token
+		- send jwt in cookie and in athorization header
+	- Persist =>
+		- when enter check the cookie if valid
+
+	*/
+
 	//DEFINE Global struct
 	Global := &global.Global{
 		Engine:     engine,
 		DataBase:   DataBase,
-		Auth:       auth.Middleware(DataBase),
+		Auth:       authMiddleware,
 		AppContext: ctx,
 	}
 

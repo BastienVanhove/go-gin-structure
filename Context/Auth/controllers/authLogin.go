@@ -2,6 +2,7 @@ package authController
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	authModel "root/Context/Auth/Models"
 	auth "root/Core/Auth"
@@ -32,6 +33,7 @@ func AuthLogin(global *global.Global, authGroup *gin.RouterGroup) {
 		google.New("463008552495-v343bl24nekr11utnftg9u6neuuoge45.apps.googleusercontent.com", "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", "http://localhost:3000/auth/google/callback", "email", "profile"),
 	)
 
+	//TODO: Put in Auth
 	authGroup.GET("/:provider", func(c *gin.Context) {
 		provider := c.Param("provider")
 		q := c.Request.URL.Query()
@@ -39,6 +41,11 @@ func AuthLogin(global *global.Global, authGroup *gin.RouterGroup) {
 		c.Request.URL.RawQuery = q.Encode()
 		gothic.BeginAuthHandler(c.Writer, c.Request)
 	})
+	//authGroup.GET("/test", func(c *gin.Context) {
+	//	r, _ := c.Cookie("_gothic_session")
+	//	fmt.Println(r)
+	//})
+
 	authGroup.GET("/:provider/callback", func(c *gin.Context) {
 		provider := c.Param("provider")
 		q := c.Request.URL.Query()
@@ -62,6 +69,12 @@ func AuthLogin(global *global.Global, authGroup *gin.RouterGroup) {
 			DataBase:   global.DataBase,
 			AppContext: global.AppContext,
 		}
+		/*TODO:
+		If exist :
+			Login
+		else
+			Register
+		*/
 
 		id, err := registerEntity.Register(user)
 		if err != nil {

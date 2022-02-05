@@ -13,6 +13,9 @@ import (
 
 var IdentityKey = "id"
 
+//TODO : create a package Auth
+//TODO : create cookie with (Secure, HttpOnly, SameSite) attributs
+
 func Middleware(dataBase *mongo.Database) *jwt.GinJWTMiddleware {
 
 	AuthEntity := AuthEntity{
@@ -34,6 +37,7 @@ func Middleware(dataBase *mongo.Database) *jwt.GinJWTMiddleware {
 			return jwt.MapClaims{}
 		},
 		IdentityHandler: func(c *gin.Context) interface{} {
+			//TODO: 
 			claims := jwt.ExtractClaims(c)
 			objectID, _ := primitive.ObjectIDFromHex(claims[IdentityKey].(string))
 			return &User{
