@@ -2,8 +2,8 @@ package global
 
 import (
 	"context"
-	auth "root/Core/Auth"
 
+	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -14,7 +14,7 @@ type Global struct {
 	DataBase   *mongo.Database
 	AppContext context.Context
 	Contexts   []ContextController
-	Auth       *auth.AuthManager
+	Auth       *jwt.GinJWTMiddleware
 	Validator  *validator.Validate
 }
 

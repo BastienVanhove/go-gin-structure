@@ -16,7 +16,8 @@ import (
 
 func AuthLogin(global *global.Global, authGroup *gin.RouterGroup) {
 
-	authGroup.GET("/login", global.Auth.Classic.LoginHandler)
+	authGroup.GET("/login", global.Auth.LoginHandler)
+	authGroup.GET("/refresh_token", global.Auth.RefreshHandler)
 
 	//authGroup.GET("/login", func(c *gin.Context) {
 	//	Auth := global.Auth
@@ -79,6 +80,7 @@ func AuthLogin(global *global.Global, authGroup *gin.RouterGroup) {
 			DataBase:   global.DataBase,
 			AppContext: global.AppContext,
 		}
+
 		/*TODO:
 		If exist :
 			Login
@@ -93,6 +95,30 @@ func AuthLogin(global *global.Global, authGroup *gin.RouterGroup) {
 				"error":   err.Error(),
 			})
 			return
+		}
+
+		tokenString, _, err := global.Auth.TokenGenerator(&user)
+		if err != nil {
+			panic(err)
+		}
+		expireCookie := global.Auth.TimeFunc().Add(global.Auth.CookieMaxAge)
+		maxage := int(expireCookie.Unix() - global.Auth.TimeFunc().Unix())
+
+		if global.Auth.SendCookie {
+
+			if global.Auth.CookieSameSite != 0 {
+				c.SetSameSite(global.Auth.CookieSameSite)
+			}
+
+			c.SetCookie(
+				global.Auth.CookieName,
+				tokenString,
+				maxage,
+				"/",
+				global.Auth.CookieDomain,
+				global.Auth.SecureCookie,
+				global.Auth.CookieHTTPOnly,
+			)
 		}
 
 		c.JSON(200, gin.H{

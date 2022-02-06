@@ -2,6 +2,8 @@ package auth
 
 import (
 	"fmt"
+	"net/http"
+	"net/url"
 	utility "root/Core/Utility"
 	"time"
 
@@ -12,25 +14,27 @@ import (
 )
 
 var (
-	key            = []byte("secret key")
-	IdentityKey    = "id"
-	timeout        = time.Hour
-	maxRefresh     = time.Hour
+	key         = []byte("secret key")
+	IdentityKey = "id"
+
+	timeout    = time.Minute / 4
+	maxRefresh = time.Hour * 24 * 30
+
+	cookieMaxAge   = time.Hour * 24 * 30
 	sendCookie     = true
 	secureCookie   = false
 	cookieHTTPOnly = true
 )
 
 //TODO : create a package Auth
-//TODO : create cookie with (Secure, HttpOnly, SameSite) attributs
 
 type AuthManager struct {
 	Classic *jwt.GinJWTMiddleware
 	OAuth   *jwt.GinJWTMiddleware
 }
 
-func Middleware(dataBase *mongo.Database) *AuthManager {
-	return &AuthManager{Classic: MiddlewareClassicAuth(dataBase), OAuth: MiddlewareClassicAuth(dataBase)}
+func Middleware(dataBase *mongo.Database) *jwt.GinJWTMiddleware {
+	return MiddlewareClassicAuth(dataBase)
 }
 
 func MiddlewareClassicAuth(dataBase *mongo.Database) *jwt.GinJWTMiddleware {
@@ -40,11 +44,12 @@ func MiddlewareClassicAuth(dataBase *mongo.Database) *jwt.GinJWTMiddleware {
 	}
 
 	authMiddleware, _ := jwt.New(&jwt.GinJWTMiddleware{
-		Realm:       "test zone",
-		Key:         key,
-		Timeout:     timeout,
-		MaxRefresh:  maxRefresh,
-		IdentityKey: IdentityKey,
+		Realm:        "test zone",
+		Key:          key,
+		Timeout:      timeout,
+		CookieMaxAge: cookieMaxAge,
+		MaxRefresh:   maxRefresh,
+		IdentityKey:  IdentityKey,
 
 		SendCookie:     sendCookie,
 		SecureCookie:   secureCookie, // true when in prod with https
@@ -98,6 +103,18 @@ func authorizator(data interface{}, c *gin.Context) bool {
 }
 
 func unauthorized(c *gin.Context, code int, message string) {
+
+	//Check if cookie exist : YES => token just expired, need to be refresh | NO => need to login
+	_, err := c.Cookie("jwt")
+	if err != nil {
+		login := url.URL{Path: "/login"}
+		c.Redirect(http.StatusFound, login.RequestURI())
+		return
+	}
+
+	location := url.URL{Path: "/auth/refresh_token"}
+	c.Redirect(http.StatusFound, location.RequestURI())
+
 	c.JSON(code, gin.H{
 		"code":    code,
 		"message": message,

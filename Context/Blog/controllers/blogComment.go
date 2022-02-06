@@ -11,7 +11,7 @@ func BlogComment(global *global.Global) {
 
 	r := global.Engine.Group("/blog/comment")
 
-	//r.Use(global.Auth.MiddlewareFunc())
+	r.Use(global.Auth.MiddlewareFunc())
 
 	r.GET("/", func(c *gin.Context) {
 		user, _ := c.Get(auth.IdentityKey)
