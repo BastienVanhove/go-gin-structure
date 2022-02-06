@@ -2,7 +2,6 @@ package authController
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	authModel "root/Context/Auth/Models"
 	auth "root/Core/Auth"
@@ -16,7 +15,17 @@ import (
 )
 
 func AuthLogin(global *global.Global, authGroup *gin.RouterGroup) {
-	authGroup.GET("/login", global.Auth.LoginHandler)
+
+	authGroup.GET("/login", global.Auth.Classic.LoginHandler)
+
+	//authGroup.GET("/login", func(c *gin.Context) {
+	//	Auth := global.Auth
+	//	data, err := Auth.Authenticator(c)
+	//	if err != nil {
+	//		panic("NOP")
+	//	}
+	//	fmt.Println("Data login : ", data)
+	//})
 
 	key := "Secret-session-key" // Replace with your SESSION_SECRET or similar
 	maxAge := 86400 * 30        // 30 days
@@ -58,12 +67,13 @@ func AuthLogin(global *global.Global, authGroup *gin.RouterGroup) {
 		}
 		var user auth.User
 		res, err := json.Marshal(data)
-
 		err = json.Unmarshal([]byte(res), &user)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}
+
+		user.UseProvider = true
 
 		registerEntity := authModel.AuthRegisterEntity{
 			DataBase:   global.DataBase,
@@ -76,7 +86,7 @@ func AuthLogin(global *global.Global, authGroup *gin.RouterGroup) {
 			Register
 		*/
 
-		id, err := registerEntity.Register(user)
+		_, err = registerEntity.Register(user)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"message": "Failed",
@@ -86,13 +96,8 @@ func AuthLogin(global *global.Global, authGroup *gin.RouterGroup) {
 		}
 
 		c.JSON(200, gin.H{
-			"message":     "success",
-			"username":    user.Name,
-			"email":       user.Email,
-			"password":    user.Password,
-			"provider":    user.Provider,
-			"id provider": user.IDProvider,
-			"ID":          id,
+			"message": "success",
+			"user":    user,
 		})
 
 	})
