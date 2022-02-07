@@ -1,4 +1,4 @@
-package auth
+package authEnity
 
 import "go.mongodb.org/mongo-driver/bson/primitive"
 

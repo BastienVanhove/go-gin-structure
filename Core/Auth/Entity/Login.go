@@ -1,6 +1,6 @@
-package auth
+package authEnity
 
 type Login struct {
-	UserName string `form:"username" json:"name" binding:"required"`
+	Email    string `form:"email" json:"email" binding:"required"`
 	Password string `form:"password" json:"password" binding:"required"`
 }

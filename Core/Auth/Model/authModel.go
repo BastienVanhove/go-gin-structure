@@ -3,23 +3,35 @@ package authModel
 import (
 	"errors"
 	"fmt"
-	auth "root/Core/Auth"
+	authEntity "root/Core/Auth/Entity"
 	model "root/Core/Model"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-//IMPORTANT to create a struct on Entity => to add custom method for this model
-type AuthRegisterEntity model.Entity
+type AuthEntity model.Entity
 
-func (e *AuthRegisterEntity) Register(user auth.User) (*mongo.InsertOneResult, error) {
+func (e *AuthEntity) AuthLogin(email string) authEntity.User {
+	var user authEntity.User
+	collectionUser := e.DataBase.Collection("user")
+	err := collectionUser.FindOne(e.AppContext, bson.D{{"email", email}}).Decode(&user)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return user
+		}
+		panic(err)
+	}
+	return user
+}
+
+func (e *AuthEntity) Register(user authEntity.User) (*mongo.InsertOneResult, error) {
 	collectionUser := e.DataBase.Collection("user")
 
-	var existingUser auth.User
+	var existingUser authEntity.User
 	collectionUser.FindOne(e.AppContext, bson.D{{"email", user.Email}}).Decode(&existingUser)
 
-	if (existingUser != auth.User{}) {
+	if (existingUser != authEntity.User{}) {
 		fmt.Println("[Auth Register] Email deja enregistré")
 		return &mongo.InsertOneResult{}, errors.New("email deja enregistré")
 	}

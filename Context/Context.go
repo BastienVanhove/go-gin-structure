@@ -3,7 +3,6 @@ package contextStart
 import (
 	"context"
 	"reflect"
-	authContext "root/Context/Auth"
 	blogContext "root/Context/Blog"
 	auth "root/Core/Auth"
 	global "root/Core/Global"
@@ -48,44 +47,17 @@ func Start() {
 		})
 	}
 
-	authMiddleware := auth.Middleware(DataBase)
-	//id, _ := primitive.ObjectIDFromHex("61faf2e93f154f1c50aeb810")
-	//u := &auth.User{
-	//	Email: "admin@gmail.com",
-	//}
-	//fmt.Println(authMiddleware.TokenGenerator(u))
-
-	/*TODO : User systeme
-
-	JWT:
-	- register => Create user
-	- Login => Return JWT and save in cookie
-	- Page needs login => (client) send jwt in athorization header
-	- Persist =>
-	 	- when enter check the cookie if valid
-
-	oAuth:
-	- register =>
-		- use Provider interface
-		- create user
-		- get access / refresh token and users datas
-		- create jwt of email
-		- send jwt in cookie and in athorization header
-	- Persist =>
-		- when enter check the cookie if valid
-
-	*/
+	middleware := auth.Init(DataBase, ctx, engine)
 
 	//DEFINE Global struct
 	Global := &global.Global{
 		Engine:     engine,
 		DataBase:   DataBase,
-		Auth:       authMiddleware,
+		Auth:       middleware,
 		AppContext: ctx,
 	}
 
 	Global.AddContext(blogContext.Init())
-	Global.AddContext(authContext.Init())
 	Global.InitContexts(envContext)
 
 	engine.Run(":3000")

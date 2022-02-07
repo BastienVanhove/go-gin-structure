@@ -1,4 +1,4 @@
-package auth
+package authEnity
 
 type Provider struct {
 	AccessToken  string ``
