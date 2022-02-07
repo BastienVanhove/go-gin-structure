@@ -17,9 +17,7 @@ var (
 	key         = []byte("secret key")
 	IdentityKey = "id"
 
-	timeout    = time.Minute / 4
-	maxRefresh = time.Hour * 24 * 30
-
+	timeout        = time.Minute / 4
 	cookieMaxAge   = time.Hour * 24 * 30
 	sendCookie     = true
 	secureCookie   = false
@@ -48,7 +46,6 @@ func MiddlewareClassicAuth(dataBase *mongo.Database) *jwt.GinJWTMiddleware {
 		Key:          key,
 		Timeout:      timeout,
 		CookieMaxAge: cookieMaxAge,
-		MaxRefresh:   maxRefresh,
 		IdentityKey:  IdentityKey,
 
 		SendCookie:     sendCookie,
@@ -105,18 +102,25 @@ func authorizator(data interface{}, c *gin.Context) bool {
 func unauthorized(c *gin.Context, code int, message string) {
 
 	//Check if cookie exist : YES => token just expired, need to be refresh | NO => need to login
-	_, err := c.Cookie("jwt")
-	if err != nil {
-		login := url.URL{Path: "/login"}
-		c.Redirect(http.StatusFound, login.RequestURI())
-		return
-	}
+	//_, err := c.Cookie("jwt")
+	//if err != nil {
+	//	login := url.URL{Path: "/login"}
+	//	c.Redirect(http.StatusFound, login.RequestURI())
+	//	return
+	//}
+	//
+	//location := url.URL{Path: "/auth/refresh_token"}
+	//c.Redirect(http.StatusFound, location.RequestURI())
 
-	location := url.URL{Path: "/auth/refresh_token"}
-	c.Redirect(http.StatusFound, location.RequestURI())
+	//currentURL := c.Request.URL.Path
+	//if currentURL == "/auth/refresh_token" {
+	//	login := url.URL{Path: "/login"}
+	//	c.Redirect(http.StatusFound, login.RequestURI())
+	//} else {
+	//	refresh := url.URL{Path: "/auth/refresh_token"}
+	//	c.Redirect(http.StatusFound, refresh.RequestURI())
+	//}
 
-	c.JSON(code, gin.H{
-		"code":    code,
-		"message": message,
-	})
+	refresh := url.URL{Path: "/auth/refresh_token/" + c.Request.URL.Path}
+	c.Redirect(http.StatusFound, refresh.RequestURI())
 }

@@ -3,7 +3,7 @@ package authController
 import (
 	"encoding/json"
 	"net/http"
-	authModel "root/Context/Auth/Models"
+	"net/url"
 	auth "root/Core/Auth"
 	global "root/Core/Global"
 
@@ -17,7 +17,17 @@ import (
 func AuthLogin(global *global.Global, authGroup *gin.RouterGroup) {
 
 	authGroup.GET("/login", global.Auth.LoginHandler)
-	authGroup.GET("/refresh_token", global.Auth.RefreshHandler)
+	//authGroup.GET("/refresh_token", global.Auth.RefreshHandler)
+	
+	authGroup.GET("/refresh_token/*referer", func(c *gin.Context) {
+		if _, _, err := global.Auth.RefreshToken(c); err != nil {
+			login := url.URL{Path: "/login"}
+			c.Redirect(http.StatusFound, login.RequestURI())
+		} else {
+			referer := url.URL{Path: c.Param("referer")}
+			c.Redirect(http.StatusFound, referer.RequestURI())
+		}
+	})
 
 	//authGroup.GET("/login", func(c *gin.Context) {
 	//	Auth := global.Auth
@@ -76,10 +86,10 @@ func AuthLogin(global *global.Global, authGroup *gin.RouterGroup) {
 
 		user.UseProvider = true
 
-		registerEntity := authModel.AuthRegisterEntity{
-			DataBase:   global.DataBase,
-			AppContext: global.AppContext,
-		}
+		//registerEntity := authModel.AuthRegisterEntity{
+		//	DataBase:   global.DataBase,
+		//	AppContext: global.AppContext,
+		//}
 
 		/*TODO:
 		If exist :
@@ -88,14 +98,14 @@ func AuthLogin(global *global.Global, authGroup *gin.RouterGroup) {
 			Register
 		*/
 
-		_, err = registerEntity.Register(user)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"message": "Failed",
-				"error":   err.Error(),
-			})
-			return
-		}
+		//_, err = registerEntity.Register(user)
+		//if err != nil {
+		//	c.JSON(http.StatusBadRequest, gin.H{
+		//		"message": "Failed",
+		//		"error":   err.Error(),
+		//	})
+		//	return
+		//}
 
 		tokenString, _, err := global.Auth.TokenGenerator(&user)
 		if err != nil {
